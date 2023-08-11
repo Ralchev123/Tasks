@@ -1,0 +1,69 @@
+import java.util.LinkedList;
+import java.util.Scanner;
+import java.util.Stack;
+
+public class Ex2 {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        LinkedList<Integer> tools = new LinkedList<>();
+        String[] toolsInput = scanner.nextLine().split(" ");
+        for (String tool : toolsInput) {
+            tools.add(Integer.parseInt(tool));
+        }
+
+        Stack<Integer> substances = new Stack<>();
+        String[] substancesInput = scanner.nextLine().split(" ");
+        for (String substance : substancesInput) {
+            substances.push(Integer.parseInt(substance));
+        }
+
+        LinkedList<Integer> challenges = new LinkedList<>();
+        String[] challengesInput = scanner.nextLine().split(" ");
+        for (String challenge : challengesInput) {
+            challenges.add(Integer.parseInt(challenge));
+        }
+
+        while (true) {
+            int tool = tools.peek();
+            int substance = substances.peek();
+
+            if (challenges.contains(tool * substance)) {
+                challenges.remove(Integer.valueOf(tool * substance));
+                tools.poll();
+                substances.pop();
+
+                if (challenges.isEmpty()) {
+                    System.out.println("Harry found an ostracon, which is dated to the 6th century BCE.");
+                    break;
+                }
+
+            } else {
+                tools.offer(tools.poll() + 1);
+                substances.push(substances.pop() - 1);
+
+                if (substances.peek() == 0) {
+                    substances.pop();
+                }
+
+                if (substances.isEmpty()) {
+                    System.out.println("Harry is lost in the temple. Oblivion awaits him.");
+                    break;
+                }
+            }
+        }
+
+        if (!tools.isEmpty()) {
+            System.out.println("Tools: " + String.join(", ", tools.stream().map(Object::toString).toArray(String[]::new)));
+        }
+        if (!substances.isEmpty()) {
+            System.out.println("Substances: " + String.join(", ", substances.stream().map(Object::toString).toArray(String[]::new)));
+        }
+        if (!challenges.isEmpty()) {
+            System.out.println("Challenges: " + String.join(", ", challenges.stream().map(Object::toString).toArray(String[]::new)));
+        }
+
+        scanner.close();
+    }
+}
