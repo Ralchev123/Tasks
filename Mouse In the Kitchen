@@ -1,0 +1,92 @@
+import java.util.*;
+
+public class MouseAdventure {
+
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+
+        String[] dimensions = scan.nextLine()
+                .split(",", -1);
+
+        int[] roomDimensions = new int[dimensions.length];
+        for (int i = 0; i < dimensions.length; i++) {
+            roomDimensions[i] = Integer.parseInt(dimensions[i]);
+        }
+
+        String[][] storage = new String[roomDimensions[0]][roomDimensions[1]];
+        int rodentRow = -1;
+        int rodentCol = -1;
+        int totalCheeseCount = 0;
+
+        for (int i = 0; i < storage.length; i++) {
+            String newRow = scan.nextLine();
+            for (int j = 0; j < storage[i].length; j++) {
+                storage[i][j] = String.valueOf(newRow.charAt(j));
+
+                if (newRow.charAt(j) == 'M') {
+                    rodentRow = i;
+                    rodentCol = j;
+                    storage[rodentRow][rodentCol] = "*";
+                }
+                if (storage[i][j].equals("C")) {
+                    totalCheeseCount++;
+                }
+            }
+        }
+
+        String action;
+        while (!(action = scan.nextLine()).equals("danger")) {
+            if ((action.equals("left") && rodentCol == 0) ||
+                    (action.equals("right") && rodentCol == storage[0].length - 1) ||
+                    (action.equals("up") && rodentRow == 0) ||
+                    (action.equals("down") && rodentRow == storage.length - 1)) {
+                System.out.println("No more cheese for now!");
+                break;
+            } else {
+                if ((action.equals("left") && storage[rodentRow][rodentCol - 1].equals("@")) ||
+                        (action.equals("right") && storage[rodentRow][rodentCol + 1].equals("@")) ||
+                        (action.equals("up") && storage[rodentRow - 1][rodentCol].equals("@")) ||
+                        (action.equals("down") && storage[rodentRow + 1][rodentCol].equals("@"))) {
+                    continue;
+                } else {
+                    if (action.equals("left")) {
+                        rodentCol--;
+                    } else if (action.equals("right")) {
+                        rodentCol++;
+                    } else if (action.equals("up")) {
+                        rodentRow--;
+                    } else if (action.equals("down")) {
+                        rodentRow++;
+                    }
+
+                    if (storage[rodentRow][rodentCol].equals("C")) {
+                        totalCheeseCount--;
+                        storage[rodentRow][rodentCol] = "*";
+                        if (totalCheeseCount == 0) {
+                            storage[rodentRow][rodentCol] = "M";
+                            System.out.println("Happy mouse! All the cheese is eaten, good night!");
+                            break;
+                        }
+                        continue;
+                    }
+                    if (storage[rodentRow][rodentCol].equals("T")) {
+                        System.out.println("Mouse is trapped!");
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (action.equals("danger")) {
+            System.out.println("Mouse will come back later!");
+        }
+        storage[rodentRow][rodentCol] = "M";
+
+        for (int i = 0; i < storage.length; i++) {
+            for (int j = 0; j < storage[i].length; j++) {
+                System.out.print(storage[i][j]);
+            }
+            System.out.println();
+        }
+    }
+}
